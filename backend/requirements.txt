@@ -1,0 +1,11 @@
+Flask
+Flask-Cors
+Flask-SocketIO
+torch
+sentence-transformers==2.2.2
+scikit-learn==1.0.2
+scipy==1.7.3
+seaborn==0.12.2
+dask
+tqdm==4.66.2
+customized-KoNLPy==0.0.51
