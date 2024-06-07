@@ -15,7 +15,9 @@ RUN npm install
 # Copy the rest of the application
 COPY . .
 
-# Build the React app
+EXPOSE 3000
+
+# St# Build the React app
 RUN npm run build
 
 # Stage 2 - Serve the React app with Nginx
