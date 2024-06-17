@@ -10,3 +10,4 @@ api/__pycache__
 roadmap.txt
 
 *.pt
+yolov7/yolov7_0605.pt
