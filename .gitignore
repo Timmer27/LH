@@ -11,3 +11,5 @@ roadmap.txt
 
 *.pt
 yolov7/yolov7_0605.pt
+/backend/results
+/backend/source

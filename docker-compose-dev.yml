@@ -24,7 +24,7 @@ services:
   backend1:
     build: ./backend
     volumes:
-      - ./backend1:/app
+      - shared-backend-data:/backend
     ports:
       - "5001:5000"
     networks:
@@ -33,7 +33,7 @@ services:
   backend2:
     build: ./backend
     volumes:
-      - ./backend2:/app
+      - shared-backend-data:/backend
     ports:
       - "5002:5000"
     networks:
@@ -43,11 +43,11 @@ services:
   # backend3:
   #   build: ./backend
   #   volumes:
-  #     - ./backend3:/app
+  #     - shared-backend-data:/backend
   #   ports:
   #     - "5003:5000"
   #   networks:
-  #     - loadbalancing
+  #     - my-network
 
   nginx:
     build:
@@ -56,8 +56,6 @@ services:
       - "80:80"
     networks:
       - my-network
-    # environment:
-    #   REACT_BACKEND_URL: http://localhost:80/api      
     environment:
       - REACT_FRONTEND_URL=http://frontend:80
       - REACT_BACKEND_URL=http://backend:5000
@@ -79,4 +77,4 @@ networks:
     external: true
 
 volumes:
-  node-modules:
+  shared-backend-data:

@@ -3,6 +3,7 @@ import axios from "axios";
 
 function App() {
   const BACKEND_URL = 'http://localhost:80/api'
+  // const BACKEND_URL = 'http://localhost:5000'
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [labels, setLabels] = useState("");

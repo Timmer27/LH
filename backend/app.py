@@ -15,18 +15,17 @@ CORS(app)
 today = '20240415'
 
 # 경로 설정
-src_path = '/home/tako/eoks/lh/lh_dev2/src'
+# src_path = '/home/tako/eoks/lh/lh_dev2/src'
+# # 경로 추가
+# if src_path not in sys.path:
+#     sys.path.append(src_path)
 
 # GPU 설정
 # torch.cuda.set_device(1)
 
-UPLOAD_FOLDER = 'source'
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'source')
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
-
-# 경로 추가
-if src_path not in sys.path:
-    sys.path.append(src_path)
 
 def tensor_to_serializable(data):
     """Converts nested tensors in a structure to serializable formats."""
@@ -51,7 +50,6 @@ def upload_file():
         file_path = os.path.join(UPLOAD_FOLDER, filename)
         file.save(file_path)
         return jsonify({'file_name': filename, 'file_path': file_path}), 200
-
 
 @app.route('/predict', methods=['POST'])
 def pred_img():

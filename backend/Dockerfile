@@ -8,5 +8,6 @@ RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 COPY . .
+COPY source /backend/source
 EXPOSE 5000
 CMD ["flask", "run", "--host=0.0.0.0"]
