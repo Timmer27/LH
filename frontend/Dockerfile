@@ -3,6 +3,9 @@
 # Stage 1 - Build the React app
 FROM node:14 as build
 
+ENV REACT_BACKEND_URL=http://localhost:80/apitsetsetest
+
+
 WORKDIR /app
 
 # Copy package.json and package-lock.json first to leverage Docker caching

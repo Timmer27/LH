@@ -1,24 +1,50 @@
-import React, { useState } from "react";
+import React, { useReducer, useRef, useState } from "react";
 import axios from "axios";
 
 function App() {
-  const BACKEND_URL = 'http://localhost:80/api'
-  // const BACKEND_URL = 'http://localhost:5000'
+  const BACKEND_URL = "http://localhost:80/api";
   const [selectedFile, setSelectedFile] = useState(null);
+  const textInput = useRef();
+  const textNum = useRef();
+  // const BACKEND_URL = 'http://localhost:5000'
   const [preview, setPreview] = useState(null);
   const [labels, setLabels] = useState("");
-
-  const [text, setText] = useState("");
-  const [topK, setTopK] = useState(3);
-  const [workType, setWorkType] = useState("");
-
+  
   const [loading, setLoading] = useState(false); // State to manage loading spinner
 
-  const handleButtonClick = () => {
-    // Handle button click event here
-    // You can perform computations similar to the Python code
-    // Update state or display output accordingly
+  const handleTextUpload = async () => {
+    const textVal = textInput.current.value
+    const textNumVal = textNum.current.value
+    setLoading(true);
+    if (!textVal | !textNumVal) {
+      alert("Please fill out the form");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("text", textVal);
+    formData.append("num", textNumVal);
+
+    try {
+      const response = await axios.post(
+        `${BACKEND_URL}/text/predict`,
+        // "http://localhost:5000/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+      // console.log();
+    } catch (error) {
+      console.error("There was an error uploading the image!", error);
+    } finally{
+      setLoading(false);
+    }
   };
+
+  console.log('{process.env.REACT_APP_API_URL}', process.env.REACT_APP_API_URL)
 
   const handleUpload = async () => {
     setLoading(true);
@@ -30,7 +56,10 @@ function App() {
     formData.append("file", selectedFile);
 
     try {
-      console.log('process.env.REACT_BACKEND_URLprocess.env.REACT_BACKEND_URLprocess.env.REACT_BACKEND_URL', BACKEND_URL)
+      console.log(
+        "process.env.REACT_BACKEND_URLprocess.env.REACT_BACKEND_URLprocess.env.REACT_BACKEND_URL",
+        BACKEND_URL
+      );
       const response = await axios.post(
         `${BACKEND_URL}/upload`,
         // "http://localhost:5000/upload",
@@ -73,7 +102,7 @@ function App() {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file && file.type === "image/jpeg") {
+    if (file && (["image/jpeg", "image/png", "image/jpg"].includes(file.type))) {
       setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -130,21 +159,24 @@ function App() {
         </h1>
         <label className="mb-2">스케줄링 모델을 사용합니다.</label>
         <textarea
+          ref={textInput}
           className="border mb-6 p-2"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
+          // value={text}
+          // onChange={(e) => setText(e.target.value)}
           placeholder="입력해주세요"
         />
         {/* Define other input fields */}
         <label className="mb-2">출력 값 개수</label>
         <input
+          ref={textNum}
+          min={1}
           className="border mb-4 p-2"
           type="number"
-          value={topK}
-          onChange={(e) => setTopK(parseInt(e.target.value))}
+          // value={topK}
+          // onChange={(e) => setTopK(parseInt(e.target.value))}
         />
         <button
-          onClick={handleButtonClick}
+          onClick={handleTextUpload}
           className="border p-2 bg-slate-600 text-white rounded-md"
         >
           제출하기

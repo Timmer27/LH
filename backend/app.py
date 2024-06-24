@@ -62,6 +62,17 @@ def pred_img():
     # Convert to JSON response
     return jsonify(serializable_lines)
 
+@app.route('/text/predict', methods=['POST'])
+def pred_text():
+    text = request.form.get('text')
+    num = request.form.get('num')
+    # Convert to JSON response
+    tmp = {
+        'text': text,
+        'num': num
+    }
+    return tmp
+
 @app.route('/', methods=['GET'])
 def test_response():
     """Return a sample JSON response."""
