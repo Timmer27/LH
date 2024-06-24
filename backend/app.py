@@ -64,6 +64,7 @@ def pred_img():
 
 @app.route('/text/predict', methods=['POST'])
 def pred_text():
+    # text 변수
     text = request.form.get('text')
     num = request.form.get('num')
     # Convert to JSON response
