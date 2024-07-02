@@ -2,8 +2,8 @@ import React, { useReducer, useRef, useState } from "react";
 import axios from "axios";
 
 function App() {
-  const BACKEND_URL = "http://localhost:5000";
-  // const BACKEND_URL = "http://localhost:80/api";
+  // const BACKEND_URL = "http://localhost:5000";
+  const BACKEND_URL = "http://192.168.1.241:80/api";
   const [selectedFile, setSelectedFile] = useState(null);
   const textInput = useRef();
   const textNum = useRef();

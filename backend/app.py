@@ -176,8 +176,8 @@ def pred_text():
 
     return jsonify(data)
 
-@app.route('/', methods=['GET'])
-def test_response():
+@app.route('/test', methods=['GET'])
+def test_response2():
     """Return a sample JSON response."""
     sample_response = {
         "items": [
