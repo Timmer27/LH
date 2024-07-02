@@ -22,15 +22,15 @@ function App() {
       icon: <HomeIcon className="h-5 w-5" />,
     },
     {
-      label: "텍스트 분석 모델1",
+      label: "텍스트 분석 모델",
       icon: <SettingsIcon className="h-5 w-5" />,
     },
     {
-      label: "텍스트 분석 모델2",
+      label: "스케줄링 기능",
       icon: <SearchIcon className="h-5 w-5" />,
     },
     {
-      label: "텍스트 분석 모델3",
+      label: "내역작성 자동화 기능",
       icon: <CalendarIcon className="h-5 w-5" />,
     },
   ];
@@ -61,7 +61,6 @@ function App() {
         }
       );
       const data = response.data["result"];
-      console.log("response.data", data);
       setTextLabels(data);
       return true;
       // console.log();
@@ -314,6 +313,15 @@ function App() {
               className="border p-2 bg-slate-600 text-white rounded-md"
             >
               제출하기
+            </button>
+            <button
+              onClick={() => {
+                setTextLabels([]);
+                textInput.current.value = "";
+              }}
+              className="border p-2 rounded-md ml-3"
+            >
+              CLEAR
             </button>
           </div>
           <div className="w-full">
