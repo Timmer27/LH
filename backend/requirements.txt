@@ -70,7 +70,7 @@ pydantic_core==2.14.6
 pyparsing==3.1.2
 python-dateutil==2.9.0.post0
 pytz==2024.1
-pywin32==303
+# pywin32==303
 PyYAML==6.0.1
 # pyzmq @ file:///D:/bld/pyzmq_1663830622471/work
 regex==2024.4.16
