@@ -2,7 +2,8 @@ import React, { useReducer, useRef, useState } from "react";
 import axios from "axios";
 
 function App() {
-  const BACKEND_URL = "http://localhost:80/api";
+  const BACKEND_URL = "http://localhost:5000";
+  // const BACKEND_URL = "http://localhost:80/api";
   const [selectedFile, setSelectedFile] = useState(null);
   const textInput = useRef();
   const textNum = useRef();
@@ -10,11 +11,12 @@ function App() {
   // const BACKEND_URL = 'http://localhost:5000'
   const [preview, setPreview] = useState(null);
   const [labels, setLabels] = useState("");
+  const [textLabels, setTextLabels] = useState([]);
   const [idx, setidx] = useState(0);
 
   const [loading, setLoading] = useState(false); // State to manage loading spinner
 
-  const tabs = [
+  const TABS = [
     {
       label: "이미지 분석 모델",
       icon: <HomeIcon className="h-5 w-5" />,
@@ -34,17 +36,18 @@ function App() {
   ];
 
   const handleTextUpload = async () => {
+    // console.log('textInput', textInput.current)
     const textVal = textInput.current.value;
-    const textNumVal = textNum.current.value;
+    // const textNumVal = textNum.current.value;
     setLoading(true);
-    if (!textVal | !textNumVal) {
-      alert("Please fill out the form");
+    if (!textVal) {
+      alert("분석할 글을 입력해주세요");
       setLoading(false);
       return;
     }
     const formData = new FormData();
     formData.append("text", textVal);
-    formData.append("num", textNumVal);
+    // formData.append("num", textNumVal);
 
     try {
       const response = await axios.post(
@@ -57,7 +60,10 @@ function App() {
           },
         }
       );
-      return response.data;
+      const data = response.data["result"];
+      console.log("response.data", data);
+      setTextLabels(data);
+      return true;
       // console.log();
     } catch (error) {
       console.error("There was an error uploading the image!", error);
@@ -208,9 +214,9 @@ function App() {
     //     {/* Display output */}
     //   </div>
     // </div>
-    <div className="grid grid-cols-[30%_70%] min-h-screen w-full">
-      <div className="flex flex-col gap-4 bg-muted p-4 bg-[#d7d7d7]">
-        {tabs.map((val, index) => (
+    <div className="flex min-h-screen w-full">
+      <div className="flex flex-col gap-4 bg-muted p-4 bg-[#d7d7d7] min-w-56">
+        {TABS.map((val, index) => (
           <button
             className="flex justify-start gap-2 rounded-md px-3 py-2 text-left transition-colors hover:bg-muted/50"
             onClick={() => {
@@ -232,7 +238,7 @@ function App() {
         </div>
       )}
       {idx === 0 && (
-        <div className="flex flex-col items-center justify-center bg-background p-8">
+        <div className="flex flex-col items-center justify-center bg-background p-8 w-[60rem] min-w-[60rem]">
           <div className="flex items-center justify-between w-full mb-4">
             <h1 className="text-3xl font-bold">이미지 파일 분석</h1>
             <div>
@@ -277,10 +283,11 @@ function App() {
           "
             placeholder="이미지 업로드"
           />
+          {labels && <div>결과물 labels: {labels}</div>}
         </div>
       )}
       {idx === 1 && (
-        <div className="flex flex-col items-center justify-center bg-background p-8">
+        <div className="flex flex-col items-center justify-center bg-background p-8 w-[60rem] min-w-[60rem]">
           <div className="items-center justify-between w-full mb-4">
             <h1 className="text-3xl font-bold mb-8">텍스트 파일 분석</h1>
             <div>
@@ -292,7 +299,7 @@ function App() {
                 placeholder="입력해주세요"
               />
               {/* Define other input fields */}
-              <label className="mb-2">출력 값 개수</label>
+              {/* <label className="mb-2">출력 값 개수</label>
               <input
                 ref={textNum}
                 min={1}
@@ -300,7 +307,7 @@ function App() {
                 type="number"
                 // value={topK}
                 // onChange={(e) => setTopK(parseInt(e.target.value))}
-              />
+              /> */}
             </div>
             <button
               onClick={handleTextUpload}
@@ -309,10 +316,25 @@ function App() {
               제출하기
             </button>
           </div>
+          <div className="w-full">
+            {textLabels.map((item, idx) => {
+              const values = Object.values(item);
+              const cd = values[0];
+              const label = values[1];
+              const prob = values[2];
+              return (
+                <div key={idx}>
+                  <div>
+                    {idx + 1}. {label} - 확률: {(prob * 100).toFixed(2)}%
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
       {(idx === 2 || idx === 3) && (
-        <div className="flex flex-col items-center justify-center bg-background p-8">
+        <div className="flex flex-col items-center justify-center bg-background p-8 w-[60rem] min-w-[60rem]">
           <div className="items-center justify-between w-full mb-4">
             <h1 className="text-3xl font-bold mb-8">
               미완성 (모델 {idx} 대기 중)

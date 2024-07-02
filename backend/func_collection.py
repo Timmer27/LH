@@ -3,24 +3,20 @@ import numpy as np
 import json
 import torch
 import re
+import os
 from sentence_transformers import util
 from sklearn.metrics import jaccard_score
 from ckonlpy.tag import Twitter
 from datetime import datetime
 
-
 # 파일 불러오기
 def file_load(file_name):
     print('file_loading..start')
+
     df = pd.read_csv(file_name, encoding='cp949')
-
-    # df = df.head(100)
     loaded_file = pd.DataFrame(columns=['contents'])
-    # df = df[['(신)공종','(신)공간','(신)부위자재','(신)하자유형','(신)유지보수공사','하자내용','처리내용']]
-    #전체 불러오기
-
     loaded_file['contents'] = df[['하자내용']]
-
+    
     print('file_loading..end')
     return loaded_file
 
@@ -33,13 +29,13 @@ def pd_read_file(file_name):
 
 # Json 파일 로드
 def pd_read_json(file_name):
-    with open(file_name) as f:
+    with open(file_name, encoding='utf-8-sig') as f:
         js = json.loads(f.read())
     return pd.DataFrame(js)
 
-def preprocess_text(content):    
+def preprocess_text(path, file_name, content):    
     # .txt 파일에서 변환할 단어들을 리스트로 불러옴
-    with open('../data/dic/불용어.txt', 'r') as f:
+    with open(os.path.join(path, file_name), 'r', encoding='utf-8-sig') as f:
         replace_list = [line.strip() for line in f]
 
     # '침실' 다음에 오는 숫자들을 찾아서 각각 쉼표와 공백으로 구분
@@ -69,13 +65,31 @@ def preprocess_text(content):
     content = re.sub("  ", " ", content)
     content = re.sub("  ", " ", content)
     content = re.sub("  ", " ", content)
-
-
     
     # 양쪽 공백 제거
-    content = content.strip()    
-
+    content = content.strip()
     return content
+
+# 표준화 처리 함수
+def replace_words(text, idx, word_dict):
+    # word_dict의 각 항목에 대해 반복
+    for input_words, output_word in word_dict.items():
+        # 입력 단어들을 쉼표로 분리하고 공백을 제거
+        input_words = input_words.split(',')
+        input_words = [word.strip() for word in input_words]
+        # 각 입력 단어에 대해 반복
+        for input_word in input_words:
+            # 입력 단어를 출력 단어로 바꿈
+            # '\b'는 단어 경계를 나타내는 정규 표현식 메타 문자
+            if isinstance(input_word, str):
+                # 단어가 이미 변경되었는지 확인
+                if output_word not in text:
+                    text = re.sub(r'\b' + input_word + r'\b', output_word, text)
+    # 1000번째 마다 진행 상황을 출력
+    if idx % 10000 == 0:
+        print(f'Processed {idx} texts', datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    return text
+
 
 # 일위대가 전처리 함수
 def cost_preprocess_text(content):    
@@ -107,8 +121,7 @@ def cost_preprocess_text(content):
     content = re.sub("  ", " ", content)
     
     # 양쪽 공백 제거
-    content = content.strip()    
-
+    content = content.strip()
     return content
 
 # # 필터 조건을 정의하는 함수
@@ -267,24 +280,6 @@ def assign_workers(period):
     else:
         return 4
 
-# # 작업자를 할당하는 함수
-# def match_worker(df_workers, work_duration_days, num_workers):
-#     # 오늘 날짜를 기준으로 작업일정 기간 동안 작업이 가능한 작업자를 찾습니다.
-#     today = pd.to_datetime(datetime.now().strftime('%Y-%m-%d'))
-#     end_date = today + pd.to_timedelta(work_duration_days, unit='d')
-
-#     # 작업자를 할당하는 로직을 작성합니다.
-#     # 이 예시에서는 작업 일정을 고려하여 작업자를 할당합니다.
-#     available_workers = df_workers[(df_workers['시작일자'] <= today) & (df_workers['완료일자'] >= end_date)]
-    
-#     # 작업 가능한 작업자가 충분하지 않은 경우, '미배정'을 추가합니다.
-#     if len(available_workers) < num_workers:
-#         available_workers = available_workers.append(pd.DataFrame({'작업자': ['미배정'] * (num_workers - len(available_workers))}))
-
-#     # 작업 가능한 작업자 중에서 상위 num_workers명을 선택합니다.
-#     assigned_workers = available_workers['작업자'].values[:num_workers]
-    
-#     return assigned_workers
 
 def calculate_duration(row):
     if pd.isna(row['k_보수완료보고일자']):
