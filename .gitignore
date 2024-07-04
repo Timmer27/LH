@@ -13,3 +13,6 @@ roadmap.txt
 yolov7/yolov7_0605.pt
 /backend/results
 /backend/source
+*.csv
+backend/model_automated/preprocessed_corpus.pkl
+*.pkl

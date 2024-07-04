@@ -289,3 +289,41 @@ def calculate_duration(row):
             return row['k_보수완료일자'] - row['k_보수지시일']
     else:
         return row['k_보수완료보고일자'] - row['k_보수지시일']
+    
+
+
+def sort_and_remove_duplicates(df, columns_to_consider):
+    # 각 칼럼의 값들이 각각 등장한 횟수에 따라 정렬
+    for column in columns_to_consider:
+        if column != '수량':
+            df['count_' + column] = df.groupby(column)[column].transform('count')
+
+    # 정렬 순서를 지정 (빈도수가 높은 순서, 그리고 칼럼의 값이 높은 순서)
+    sort_order = []
+    for column in columns_to_consider:
+        if column != '수량':
+            sort_order.extend(['count_' + column, column])
+        else:
+            sort_order.append(column)
+
+    df = df.sort_values(by=sort_order, ascending=[False]*len(sort_order))
+
+    # 칼럼들을 기준으로 중복 제거
+    df = df.drop_duplicates(subset=columns_to_consider)
+    df = df.drop(columns=['count_' + column for column in columns_to_consider if column != '수량'])
+
+    return df
+
+# API 응답 양식으로 변환
+def convert_to_api_format(row):
+    return {
+        "unt_prc_cd": row['일위대가코드'],
+        "unt_prc_nm": row['일위대가명'],
+        "unt_prc_stdd": row['규격'],
+        "unt_prc_unt": row['단위'],
+        "unt_prc_qty": row['수량'],
+        "unt_prc_mc": row['재료비'],
+        "unt_prc_lc": row['노무비'],
+        "unt_prc_e": row['경비'],
+        "unt_prc_tc": row['합계']
+    }
