@@ -337,6 +337,7 @@ function App() {
     return `${year}-${month}-${day}`;
   }
 
+  // 화면 렌더링 
   return (
     <div className="flex min-h-screen w-full">
       <div className="flex flex-col gap-4 bg-muted p-4 bg-[#d7d7d7] min-w-60">
