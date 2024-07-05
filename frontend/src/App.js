@@ -5,8 +5,8 @@ import "react-calendar/dist/Calendar.css"; // css import
 
 function App() {
   // const BACKEND_URL = "http://localhost:5000";
-  const BACKEND_URL = process.env.REACT_APP_URL;
-  // const BACKEND_URL = "http://192.168.1.241:80/api";
+  // const BACKEND_URL = process.env.REACT_APP_URL;
+  const BACKEND_URL = "http://192.168.1.208:80/api";
   const [selectedFile, setSelectedFile] = useState(null);
   const textInput = useRef();
   const scriptInput = useRef();
