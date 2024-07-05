@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, make_response, request
+from flask import Flask, jsonify, make_response, request, send_from_directory
 from flask_cors import CORS
 import os, sys, time, warnings
 from datetime import datetime, timedelta
@@ -21,11 +21,7 @@ warnings.filterwarnings('ignore')
 app = Flask(__name__)
 CORS(app)
 
-# 경로 설정
-# src_path = '/home/tako/eoks/lh/lh_dev2/src'
-# # 경로 추가
-# if src_path not in sys.path:
-#     sys.path.append(src_path)
+# app.config['RESULTS_FOLDER'] = os.path.join(os.getcwd(), 'results')
 
 # GPU 설정
 # torch.cuda.set_device(1)
@@ -48,6 +44,7 @@ TEXT_MODEL_FILES = os.path.join(os.getcwd(), 'model_text')
 SCHEDULE_MODEL_FILES = os.path.join(os.getcwd(), 'model_schedule')
 AUTOMATED_MODEL_FILES = os.path.join(os.getcwd(), 'model_automated')
 UPLOAD_FOLDER = os.path.join(os.getcwd(), 'source')
+OUTPUT_FOLDER = os.path.join(os.getcwd(), 'results')
 STANDARD_WORD_SET = pd_read_json(os.path.join(os.getcwd(), 'TB_MMA_CNV_DIC_M.json'))
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
@@ -67,7 +64,7 @@ def txt_prd_func(model, flw_cts, word_dict, tokenizer, labels_df, flwDtlSn:str="
                     {"sec_tp_cd": "02", "sec_tp_nm": "작동불량", "sec_tp_prb": "0.8"},
                     {"thi_tp_cd": "03", "thi_tp_nm": "마감불량", "thi_tp_prb": "0.7"}]
         }
-    """    
+    """
     start_time = time.time()  # 시작 시간 저장
 
     # 입력 처리'../data/dic/불용어.txt'
@@ -404,7 +401,12 @@ def upload_file():
         filename = file.filename
         file_path = os.path.join(UPLOAD_FOLDER, filename)
         file.save(file_path)
-        return jsonify({'file_name': filename, 'file_path': file_path}), 200
+        return jsonify({'file_name': filename, 'file_path': file_path, 'output_path': OUTPUT_FOLDER}), 200
+
+@app.route('/image/<filename>')
+def get_image(filename):
+    image_directory = os.path.join(app.root_path, 'results')
+    return send_from_directory(image_directory, filename)
 
 @app.route('/predict', methods=['POST'])
 def pred_img():

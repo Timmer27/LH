@@ -13,6 +13,7 @@ function App() {
   const fileInputRef = useRef();
   // const BACKEND_URL = 'http://localhost:5000'
   const [preview, setPreview] = useState(null);
+  const [linedImage, setLinedImage] = useState(null);
   const [labels, setLabels] = useState("");
   const [textLabels, setTextLabels] = useState([]);
   const [idx, setidx] = useState(0);
@@ -252,10 +253,6 @@ function App() {
     formData.append("file", selectedFile);
 
     try {
-      console.log(
-        "process.env.REACT_BACKEND_URLprocess.env.REACT_BACKEND_URLprocess.env.REACT_BACKEND_URL",
-        BACKEND_URL
-      );
       const response = await axios.post(
         `${BACKEND_URL}/upload`,
         // "http://localhost:5000/upload",
@@ -272,8 +269,21 @@ function App() {
       console.error("There was an error uploading the image!", error);
     }
   };
+ 
+  const imageFromBackend = async (file_name) => {
+    axios.get(`${BACKEND_URL}/image/${file_name}`, { responseType: 'blob' })
+      .then(response => {
+        const imageObjectURL = URL.createObjectURL(response.data);
+        console.log('response.data', response.data)
+        console.log('imageObjectURL', imageObjectURL)
+        setLinedImage(imageObjectURL);
+      })
+      .catch(error => {
+        console.error('Error fetching image:', error);
+      });
+  }
 
-  const imagePredictHandler = async (file_name, file_path) => {
+  const imagePredictHandler = async (file_name, file_path, output_path) => {
     const formData = new FormData();
     formData.append("file_name", file_name);
     formData.append("file_path", file_path);
@@ -289,6 +299,7 @@ function App() {
           },
         }
       );
+      await imageFromBackend(file_name)
       setLabels(response.data);
       setLoading(false);
     } catch (error) {
@@ -374,7 +385,11 @@ function App() {
                 disabled={!selectedFile}
                 onClick={async () => {
                   const data = await imageUploadHandler();
-                  await imagePredictHandler(data.file_name, data.file_path);
+                  await imagePredictHandler(
+                    data.file_name,
+                    data.file_path,
+                    data.output_path
+                  );
                 }}
               >
                 제출
@@ -393,10 +408,30 @@ function App() {
             min-h-[28rem]
             p-2
             object-contain
+            mb-2
           "
-            placeholder="이미지 업로드"
           />
-          {labels && <div>결과물 labels: {labels}</div>}
+          {/* {labels && <div>결과물 labels: {labels}</div>} */}
+          <hr />
+          {linedImage && (
+            <div className="w-full">
+              <h1 className="text-3xl font-bold mb-4">예측 사진</h1>
+              <img
+                src={linedImage}
+                // src="/placeholder.svg"
+                alt={CalendarIcon}
+                className="max-w-full *:
+            border-slate-600
+            rounded-md
+            w-full
+            max-h-[28rem]
+            min-h-[28rem]
+            p-2
+            object-contain
+          "
+              />
+            </div>
+          )}
         </div>
       )}
       {idx === 1 && (
