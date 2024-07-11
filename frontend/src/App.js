@@ -4,15 +4,12 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css"; // css import
 
 function App() {
-  // const BACKEND_URL = "http://localhost:5000";
-  // const BACKEND_URL = process.env.REACT_APP_URL;
-  const BACKEND_URL = "http://192.168.1.208:80/api";
+  const BACKEND_URL = process.env.REACT_APP_URL;
   const [selectedFile, setSelectedFile] = useState(null);
   const textInput = useRef();
   const scriptInput = useRef();
   const textNum = useRef();
   const fileInputRef = useRef();
-  // const BACKEND_URL = 'http://localhost:5000'
   const [preview, setPreview] = useState(null);
   const [linedImage, setLinedImage] = useState(null);
   const [labels, setLabels] = useState("");
@@ -241,8 +238,6 @@ function App() {
       setLoading(false);
     }
   };
-
-  console.log("{process.env.REACT_APP_API_URL}", process.env.REACT_APP_API_URL);
 
   const imageUploadHandler = async () => {
     setLoading(true);

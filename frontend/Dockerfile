@@ -3,8 +3,7 @@
 # Stage 1 - Build the React app
 FROM node:14 as build
 
-ENV REACT_BACKEND_URL=http://localhost:80/apitsetsetest
-
+# ENV REACT_BACKEND_URL="http://localhost:80/apitsetsetest"
 
 WORKDIR /app
 
@@ -17,6 +16,8 @@ RUN npm install
 
 # Copy the rest of the application
 COPY . .
+
+ENV REACT_APP_URL="http://172.30.1.81:80/api"
 
 EXPOSE 3000
 
