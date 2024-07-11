@@ -593,12 +593,39 @@ def pred_automated():
 
     return jsonify(data)
 
+@app.route('/gputest', methods=['GET'])
+def test_response3():
+    # Check if CUDA is available
+    print("PyTorch version:", torch.__version__)
+    print("CUDA available:", torch.cuda.is_available())
+    print("CUDA version:", torch.version.cuda)
+    x = torch.tensor([1.0, 2.0, 3.0], device=torch.device('cuda'))
+    if torch.cuda.is_available():
+        print("CUDA is available. Number of GPUs:", torch.cuda.device_count())
+        for i in range(torch.cuda.device_count()):
+            print(f"Device {i}: {torch.cuda.get_device_name(i)}")
+
+        # Set the GPU device
+        device_index = 0  # Change this to the appropriate GPU index
+        torch.cuda.set_device(device_index)
+        print("Current device:", torch.cuda.current_device())
+        
+        x = torch.tensor([1.0, 2.0, 3.0], device=torch.device('cuda'))
+        print(x)        
+
+        # Optionally, set default tensor type to GPU
+        torch.set_default_tensor_type(torch.cuda.FloatTensor)
+    else:
+        print("CUDA is not available.")
+
+    return "hi test"
+
 @app.route('/test', methods=['GET'])
 def test_response2():
     """Return a sample JSON response."""
     sample_response = {
         "items": [
-            { "id": 1, "name": "Apples",  "price": "$2" },
+            { "id": 1, "name": "Appsssssles",  "price": "$2" },
             { "id": 2, "name": "Peaches", "price": "$5" }
         ]
     }
@@ -615,4 +642,4 @@ def test_response2():
     return response
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)

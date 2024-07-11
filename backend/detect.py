@@ -18,7 +18,7 @@ def detect(
         agnostic_nms=False, augment=False, classes=None, conf_thres=0.5, device='cpu',
         exist_ok=True, img_size=640, iou_thres=0.6, name='detect_060617', no_trace=False, nosave=False,
         project='results', save_conf=False, save_txt=True, source='source/test_img.jpg', saved_img_name = "test3.jpg", saved_txt_name = "test3.txt",
-        update=False, view_img=False, weights=['yolov7_0605.pt'],
+        update=False, view_img=False, weights=['yolov7.pt'],
         imgsz=640, trace=False, save_img=True
     ):
     # source, weights, view_img, save_txt, imgsz, trace = opt.source, opt.weights, opt.view_img, opt.save_txt, opt.img_size, not opt.no_trace
