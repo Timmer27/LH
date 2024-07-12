@@ -4,7 +4,7 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css"; // css import
 
 function App() {
-  const BACKEND_URL = process.env.REACT_APP_URL;
+  const BACKEND_URL = process.env.REACT_APP_URL || "http://localhost:5000";
   const [selectedFile, setSelectedFile] = useState(null);
   const textInput = useRef();
   const scriptInput = useRef();
@@ -15,6 +15,8 @@ function App() {
   const [labels, setLabels] = useState("");
   const [textLabels, setTextLabels] = useState([]);
   const [idx, setidx] = useState(0);
+
+  const [tableData, setTableData] = useState([]);
 
   const [formValues, setFormValues] = useState({
     spce_cd: "01",
@@ -57,7 +59,7 @@ function App() {
   ];
 
   const inputChangeHandler = (event) => {
-    const { id, value } = event.target;
+    const { id, value } = event.tdataarget;
     setFormValues({
       ...formValues,
       [id]: value,
@@ -231,6 +233,7 @@ function App() {
       );
       const data = response.data["result"];
       console.log("res", response.data);
+      setTableData(data['일위대가'])
       return true;
     } catch (error) {
       console.error("error", error);
@@ -657,21 +660,38 @@ function App() {
               CLEAR
             </button>
           </div>
-          {/* <div className="w-full">
-            {textLabels.map((item, idx) => {
-              const values = Object.values(item);
-              const cd = values[0];
-              const label = values[1];
-              const prob = values[2];
-              return (
-                <div key={idx}>
-                  <div>
-                    {idx + 1}. {label} - 확률: {(prob * 100).toFixed(2)}%
-                  </div>
-                </div>
-              );
-            })}
-          </div> */}
+          {tableData.length !== 0 && 
+            <table className="custom-table">
+              <thead>
+                <tr>
+                  <th>code</th>
+                  <th>unt_prc_e</th>
+                  <th>name</th>
+                  <th>unit_price</th>
+                  <th>unit_name</th>
+                  <th>unt_prc_qty</th>
+                  <th>unt_prc_stdd</th>
+                  <th>unt_prc_tc</th>
+                  <th>unt_prc_unt</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tableData.map((item, index) => (
+                  <tr key={index}>
+                    <td>{item.unt_prc_cd}</td>
+                    <td>{item.unt_prc_e}</td>
+                    <td>{item.unt_prc_lc}</td>
+                    <td>{item.unt_prc_mc}</td>
+                    <td>{item.unt_prc_nm}</td>
+                    <td>{item.unt_prc_qty}</td>
+                    <td>{item.unt_prc_stdd}</td>
+                    <td>{item.unt_prc_tc}</td>
+                    <td>{item.unt_prc_unt}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          }
         </div>
       )}
     </div>

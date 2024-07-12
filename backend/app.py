@@ -481,22 +481,13 @@ def pred_schedule():
         loaded_preprocessed_corpus = pickle.load(f)
         
     # GPU 설정
-    if torch.cuda.is_available():
-        torch.cuda.set_device(0)
-        device = torch.device('cuda:0')
-        print("Using GPU:", torch.cuda.get_device_name(0))
-        # 학습된 모델 로드
-        model = torch.load(os.path.join(SCHEDULE_MODEL_FILES, 'dev_BERT_TSDAE_MODEL_20240529.pt'))
-        # 임베딩 벡터 로드
-        train_embeddings = torch.load(os.path.join(SCHEDULE_MODEL_FILES, 'dev_corpus_embedded_20240529.pt')).float()
-    else:
-        device = torch.device('cpu')
-        # 학습된 모델 로드
-        model = torch.load(os.path.join(SCHEDULE_MODEL_FILES, 'dev_BERT_TSDAE_MODEL_20240529.pt'), map_location=torch.device('cpu'))
-        # 임베딩 벡터 로드
-        train_embeddings = torch.load(os.path.join(SCHEDULE_MODEL_FILES, 'dev_corpus_embedded_20240529.pt'), map_location=torch.device('cpu')).float()
-        print("Using CPU")
-
+    torch.cuda.set_device(0)
+    device = torch.device('cuda:0')
+    print("Using GPU:", torch.cuda.get_device_name(0))
+    # 학습된 모델 로드
+    model = torch.load(os.path.join(SCHEDULE_MODEL_FILES, 'dev_BERT_TSDAE_MODEL_20240529.pt'), map_location=device)
+    # 임베딩 벡터 로드
+    train_embeddings = torch.load(os.path.join(SCHEDULE_MODEL_FILES, 'dev_corpus_embedded_20240529.pt'),  map_location=device).float()
 
     rspns= schdl_func(inpt, model, word_dict, loaded_preprocessed_corpus, labels_df, train_contents, train_embeddings)
     # rspns = {
@@ -549,32 +540,22 @@ def pred_automated():
 
     # 데이터의 길이를 출력 Length of test_contents :  87
     print('Length of test_contents : ',len(test_contents)) 
+    print("Using GPU:", torch.cuda.get_device_name(0))
     # GPU 설정
-    if torch.cuda.is_available():
-        torch.cuda.set_device(0)
-        device = torch.device('cuda:0')
-        print("Using GPU:", torch.cuda.get_device_name(0))
-        # 학습된 모델 로드
-        model = torch.load(os.path.join(AUTOMATED_MODEL_FILES, 'dev_BERT_TSDAE_MODEL_20240531.pt'))
-        # 학습된 임베딩 벡터 로드
-        train_embeddings = torch.load(os.path.join(AUTOMATED_MODEL_FILES, 'dev_corpus_embedded_20240531.pt'))
-    else:
-        device = torch.device('cpu')
-        # 학습된 모델 로드
-        model = torch.load(os.path.join(AUTOMATED_MODEL_FILES, 'dev_BERT_TSDAE_MODEL_20240531.pt'), map_location=torch.device('cpu'))    
-        # 학습된 임베딩 벡터 로드
-        train_embeddings = torch.load(os.path.join(AUTOMATED_MODEL_FILES, 'dev_corpus_embedded_20240531.pt'))
-        print("Using CPU")
-
-
-    # # # 형태소 분석기 초기화
-    # twitter = initialize_morpheme_analyzer(STANDARD_WORD_SET)
-    # # # 학습 데이터의 형태소 분석을 미리 수행, CSV 파일 저장
-    # preprocessed_corpus = preprocess_corpus(dup_train_list['preprocessed_con'], twitter)
-
-    # # 데이터 저장
-    # with open(data_preprocessed_path + 'task3/preprocessed_corpus.pkl', 'wb') as f:
-    #     pickle.dump(preprocessed_corpus, f)
+    device = torch.device('cuda:0')
+    # 학습된 모델 로드
+    model = torch.load(os.path.join(AUTOMATED_MODEL_FILES, 'dev_BERT_TSDAE_MODEL_20240531.pt'))
+    # 학습된 임베딩 벡터 로드
+    train_embeddings = torch.load(os.path.join(AUTOMATED_MODEL_FILES, 'dev_corpus_embedded_20240531.pt'))
+    # if torch.cuda.is_available():
+    #     torch.cuda.set_device(0)
+    # else:
+    #     device = torch.device('cpu')
+    #     # 학습된 모델 로드
+    #     model = torch.load(os.path.join(AUTOMATED_MODEL_FILES, 'dev_BERT_TSDAE_MODEL_20240531.pt'), map_location=torch.device('cpu'))    
+    #     # 학습된 임베딩 벡터 로드
+    #     train_embeddings = torch.load(os.path.join(AUTOMATED_MODEL_FILES, 'dev_corpus_embedded_20240531.pt'))
+    #     print("Using CPU")
 
     # 데이터 로드 .
     with open(os.path.join(AUTOMATED_MODEL_FILES, 'preprocessed_corpus.pkl'), 'rb') as f:
@@ -599,24 +580,15 @@ def test_response3():
     print("PyTorch version:", torch.__version__)
     print("CUDA available:", torch.cuda.is_available())
     print("CUDA version:", torch.version.cuda)
-    x = torch.tensor([1.0, 2.0, 3.0], device=torch.device('cuda'))
-    if torch.cuda.is_available():
-        print("CUDA is available. Number of GPUs:", torch.cuda.device_count())
-        for i in range(torch.cuda.device_count()):
-            print(f"Device {i}: {torch.cuda.get_device_name(i)}")
-
-        # Set the GPU device
-        device_index = 0  # Change this to the appropriate GPU index
-        torch.cuda.set_device(device_index)
-        print("Current device:", torch.cuda.current_device())
-        
-        x = torch.tensor([1.0, 2.0, 3.0], device=torch.device('cuda'))
-        print(x)        
-
-        # Optionally, set default tensor type to GPU
-        torch.set_default_tensor_type(torch.cuda.FloatTensor)
-    else:
-        print("CUDA is not available.")
+    torch.cuda.empty_cache()
+    # GPU 설정
+    torch.cuda.set_device(0)
+    device = torch.device('cuda:0')
+    print("Using GPU:", torch.cuda.get_device_name(0))
+    # 학습된 모델 로드
+    model = torch.load(os.path.join(SCHEDULE_MODEL_FILES, 'dev_BERT_TSDAE_MODEL_20240529.pt'), map_location=device)
+    # 임베딩 벡터 로드
+    train_embeddings = torch.load(os.path.join(SCHEDULE_MODEL_FILES, 'dev_corpus_embedded_20240529.pt'),  map_location=device).float()
 
     return "hi test"
 
@@ -628,10 +600,24 @@ def test_response2():
             { "id": 1, "name": "Appsssssles",  "price": "$2" },
             { "id": 2, "name": "Peaches", "price": "$5" }
         ]
-    }
+    }    # GPU 설정
+    torch.cuda.set_device(0)
+    device = torch.device('cuda:0')
+    print("Using GPU:", torch.cuda.get_device_name(0))
+    # 학습된 모델 로드
+    model = torch.load(os.path.join(SCHEDULE_MODEL_FILES, 'dev_BERT_TSDAE_MODEL_20240529.pt'))
+    # 임베딩 벡터 로드
+    train_embeddings = torch.load(os.path.join(SCHEDULE_MODEL_FILES, 'dev_corpus_embedded_20240529.pt')).float()
     # JSONify response
     response = make_response(jsonify(sample_response))
-
+    # GPU 설정
+    torch.cuda.set_device(0)
+    device = torch.device('cuda:0')
+    print("Using GPU:", torch.cuda.get_device_name(0))
+    # 학습된 모델 로드
+    model = torch.load(os.path.join(SCHEDULE_MODEL_FILES, 'dev_BERT_TSDAE_MODEL_20240529.pt'))
+    # 임베딩 벡터 로드
+    train_embeddings = torch.load(os.path.join(SCHEDULE_MODEL_FILES, 'dev_corpus_embedded_20240529.pt')).float()
     # Add Access-Control-Allow-Origin header to allow cross-site request
     response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
 

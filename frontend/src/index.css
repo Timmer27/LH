@@ -43,3 +43,27 @@ code {
   display: flex;
   margin-left: 1px;
 }
+
+.custom-table {
+  border: 1px solid rgba(128, 128, 128, 0.8); /* Gray border with 80% opacity */
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.custom-table th {
+  background-color: #4CAF50; /* Header background color */
+  color: white; /* Header text color */
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.8); /* Gray border bottom with 80% opacity */
+}
+
+.custom-table td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.8); /* Gray border bottom with 80% opacity */
+}
+
+.custom-table tbody tr:last-child td {
+  border-bottom: none; /* Remove bottom border from last row */
+}
