@@ -1,37 +1,10 @@
 import pandas as pd
 import numpy as np
-import json
-import torch
-import re
-import os
 from sentence_transformers import util
-from sklearn.metrics import jaccard_score
 from ckonlpy.tag import Twitter
 from datetime import datetime
-
-# 파일 불러오기
-def file_load(file_name):
-    print('file_loading..start')
-
-    df = pd.read_csv(file_name, encoding='cp949')
-    loaded_file = pd.DataFrame(columns=['contents'])
-    loaded_file['contents'] = df[['하자내용']]
-    
-    print('file_loading..end')
-    return loaded_file
-
-# CSV 파일 로드
-def pd_read_file(file_name):
-    df = pd.read_csv(file_name, encoding='cp949')
-    df = df.drop('Unnamed: 0', axis=1)
-    df.reset_index(drop=True, inplace=True)
-    return df
-
-# Json 파일 로드
-def pd_read_json(file_name):
-    with open(file_name, encoding='utf-8-sig') as f:
-        js = json.loads(f.read())
-    return pd.DataFrame(js)
+import re, os
+import torch
 
 def preprocess_text(path, file_name, content):    
     # .txt 파일에서 변환할 단어들을 리스트로 불러옴
@@ -123,30 +96,6 @@ def cost_preprocess_text(content):
     # 양쪽 공백 제거
     content = content.strip()
     return content
-
-# # 필터 조건을 정의하는 함수
-# def filter_data(df, embeddings, column_values, top_k):
-#     # 조건을 순서대로 정의
-#     conditions_order = [
-#                         ['(신)공종', '(신)공간', '(신)부위자재', '(신)하자유형'],  # 첫 번째 조건: '(신)공종'과 '(신)공간'과 (신)부위자재와 (신)하자유형이 일치
-#                         ['(신)공종', '(신)공간', '(신)부위자재'],  # 두 번째 조건: '(신)공종'과 '(신)공간'과 (신)부위자재가 일치
-#                         ['(신)공종', '(신)공간'],  # 세 번째 조건: '(신)공종'과 '(신)공간'이 일치
-#                         ['(신)공종']  # 네 번째 조건: '(신)공종'만 일치
-#                         ]
-
-#     # 각 조건에 대해 필터링 시도
-#     for conditions in conditions_order:
-#         condition_checks = [df[column] == column_values[column] for column in conditions]
-#         filtered_df = df[np.logical_and.reduce(condition_checks)]
-#         filtered_df = filtered_df.reset_index(drop=True)
-
-#         # 필터링 결과가 비어있지 않으면 결과 반환
-#         if len(filtered_df) >= top_k:
-#             filtered_embeddings = embeddings[np.logical_and.reduce(condition_checks)]
-#             return filtered_df, filtered_embeddings
-
-#     # 모든 조건에 대해 필터링 결과가 비어있으면 원래의 데이터프레임과 임베딩 반환
-#     return df, embeddings
 
 
 # 필터 조건을 정의하는 함수
