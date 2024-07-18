@@ -6,6 +6,7 @@ const TABS = [
   { label: "텍스트 분석 모델", icon: <SettingsIcon className="h-5 w-5" /> },
   { label: "스케줄링 기능", icon: <SearchIcon className="h-5 w-5" /> },
   { label: "내역작성 자동화 기능", icon: <CalendarIcon className="h-5 w-5" /> },
+  { label: "음성파일분석", icon: <SettingsIcon className="h-5 w-5" /> },
 ];
 
 const Tabs = ({ setIdx, idx }) => {

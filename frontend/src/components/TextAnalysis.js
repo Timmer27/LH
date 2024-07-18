@@ -1,9 +1,13 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
-const TextAnalysis = ({BACKEND_URL, setLoading}) => {
+const TextAnalysis = ({ BACKEND_URL, setLoading }) => {
   const textInput = useRef();
   const [textLabels, setTextLabels] = useState([]);
+
+  useEffect(() => {
+    textInput.current.value = '문이 안열림'
+  }, [])
 
   const textModelSubmitHandler = async () => {
     // console.log('textInput', textInput.current)
@@ -48,20 +52,8 @@ const TextAnalysis = ({BACKEND_URL, setLoading}) => {
           <textarea
             ref={textInput}
             className="border mb-6 p-2 w-full"
-            // value={text}
-            // onChange={(e) => setText(e.target.value)}
             placeholder="입력해주세요"
           />
-          {/* Define other input fields */}
-          {/* <label className="mb-2">출력 값 개수</label>
-              <input
-                ref={textNum}
-                min={1}
-                className="border mb-4 p-2 w-full"
-                type="number"
-                // value={topK}
-                // onChange={(e) => setTopK(parseInt(e.target.value))}
-              /> */}
         </div>
         <button
           onClick={textModelSubmitHandler}

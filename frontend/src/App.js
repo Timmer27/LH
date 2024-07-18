@@ -5,6 +5,7 @@ import TextAnalysis from "./components/TextAnalysis";
 import Scheduling from "./components/Scheduling";
 import Automation from "./components/Automation";
 import "react-calendar/dist/Calendar.css";
+import AudioAnalysis from "./components/AudioAnalysis.js";
 
 function App() {
   const BACKEND_URL = process.env.REACT_APP_URL || "http://localhost:5000";
@@ -19,10 +20,12 @@ function App() {
         </div>
       )}
       <Tabs setIdx={setIdx} idx={idx} />
-      {idx === 0 && <ImageAnalysis setLoading={setLoading} BACKEND_URL={BACKEND_URL}/>}
-      {idx === 1 && <TextAnalysis setLoading={setLoading} BACKEND_URL={BACKEND_URL}/>}
-      {idx === 2 && <Scheduling setLoading={setLoading} BACKEND_URL={BACKEND_URL}/>}
-      {idx === 3 && <Automation setLoading={setLoading} BACKEND_URL={BACKEND_URL}/>}
+      {idx === 0 && <ImageAnalysis setLoading={setLoading} BACKEND_URL={BACKEND_URL} />}
+      {idx === 1 && <TextAnalysis setLoading={setLoading} BACKEND_URL={BACKEND_URL} />}
+      {idx === 2 && <Scheduling setLoading={setLoading} BACKEND_URL={BACKEND_URL} />}
+      {idx === 3 && <Automation setLoading={setLoading} BACKEND_URL={BACKEND_URL} />}
+      {idx === 4 && <AudioAnalysis setLoading={setLoading} BACKEND_URL={BACKEND_URL} />}
+
     </div>
   );
 }
